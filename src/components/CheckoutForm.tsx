@@ -15,6 +15,9 @@ interface CheckoutFormProps {
   onBack: () => void;
 }
 
+// 1. Definindo a constante para a taxa de entrega
+const DELIVERY_FEE = 3.00;
+
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
   const { items, getTotalPrice, clearCart } = useCart();
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
@@ -25,6 +28,17 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
     address: '',
     observations: '',
   });
+
+  // 2. Criando uma função para calcular o total final
+  const calculateFinalTotal = () => {
+    const itemsTotal = getTotalPrice();
+    if (orderDetails.deliveryType === 'delivery') {
+      return itemsTotal + DELIVERY_FEE;
+    }
+    return itemsTotal;
+  };
+
+  const finalTotal = calculateFinalTotal();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +97,14 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
       message += `   Subtotal: R$ ${item.totalPrice.toFixed(2).replace('.', ',')}\n\n`;
     });
     
-    message += `💰 *TOTAL: R$ ${getTotalPrice().toFixed(2).replace('.', ',')}*\n\n`;
+    // 3. Ajustando a mensagem do WhatsApp
+    message += ` SUBTOTAL DOS ITENS: R$ ${getTotalPrice().toFixed(2).replace('.', ',')}\n`;
+
+    if (orderDetails.deliveryType === 'delivery') {
+      message += `🛵 *Taxa de Entrega:* R$ ${DELIVERY_FEE.toFixed(2).replace('.', ',')}\n`;
+    }
+
+    message += `💰 *TOTAL GERAL: R$ ${finalTotal.toFixed(2).replace('.', ',')}*\n\n`;
     
     message += `🚚 *Tipo:* ${orderDetails.deliveryType === 'delivery' ? 'Delivery' : 'Retirada'}\n`;
     
@@ -165,23 +186,29 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
               </div>
             </RadioGroup>
 
+            {/* 4. Exibindo a mensagem da taxa de entrega e o campo de endereço */}
             {orderDetails.deliveryType === 'delivery' && (
-              <div>
-                <Label htmlFor="address">Endereço para entrega *</Label>
-                <Input
-                  id="address"
-                  value={orderDetails.address}
-                  onChange={(e) => setOrderDetails(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder="Rua, número, bairro, cidade"
-                  required={orderDetails.deliveryType === 'delivery'}
-                />
+              <div className="mt-4 space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Taxa de entrega: R$ {DELIVERY_FEE.toFixed(2).replace('.', ',')}
+                </p>
+                <div>
+                  <Label htmlFor="address">Endereço para entrega *</Label>
+                  <Input
+                    id="address"
+                    value={orderDetails.address}
+                    onChange={(e) => setOrderDetails(prev => ({ ...prev, address: e.target.value }))}
+                    placeholder="Rua, número, bairro, cidade"
+                    required={orderDetails.deliveryType === 'delivery'}
+                  />
+                </div>
               </div>
             )}
           </div>
 
           <Separator />
 
-          {/* Payment Method */}
+          {/* Payment Method (sem alterações) */}
           <div className="space-y-4">
             <h3 className="font-semibold text-primary">Forma de Pagamento</h3>
             <RadioGroup
@@ -207,7 +234,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
 
           <Separator />
 
-          {/* Observations */}
+          {/* Observations (sem alterações) */}
           <div className="space-y-4">
             <Label htmlFor="observations">Observações</Label>
             <Textarea
@@ -225,7 +252,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
           <div className="space-y-2">
             <h3 className="font-semibold text-primary">Resumo do Pedido</h3>
             <div className="text-2xl font-bold text-center text-primary">
-              Total: R$ {getTotalPrice().toFixed(2).replace('.', ',')}
+              {/* 5. Atualizando o total exibido na tela */}
+              Total: R$ {finalTotal.toFixed(2).replace('.', ',')}
             </div>
           </div>
 
