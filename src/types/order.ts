@@ -12,10 +12,17 @@ export interface Additional {
   price: number;
 }
 
+export interface CartAdditional {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
+
 export interface CartItem {
   id: string;
   menuItem: MenuItem;
-  additionals: Additional[];
+  additionals: CartAdditional[];
   quantity: number;
   totalPrice: number;
   observations?: string;

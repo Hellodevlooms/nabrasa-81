@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Minus } from 'lucide-react';
-import { MenuItem, Additional } from '@/types/order';
+import { MenuItem, Additional, CartAdditional } from '@/types/order';
 import { useCart } from '@/contexts/CartContext';
 import { additionals as allAdditionals } from '@/data/menu';
 
@@ -13,29 +12,39 @@ interface MenuCardProps {
 }
 
 const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
-  const [selectedAdditionals, setSelectedAdditionals] = useState<Additional[]>([]);
+  const [selectedAdditionals, setSelectedAdditionals] = useState<Record<string, number>>({});
   const [quantity, setQuantity] = useState(1);
   const [observations, setObservations] = useState('');
   const { addToCart } = useCart();
 
-  const handleAdditionalToggle = (additional: Additional) => {
-    setSelectedAdditionals(prev => {
-      const exists = prev.find(a => a.id === additional.id);
-      if (exists) {
-        return prev.filter(a => a.id !== additional.id);
-      }
-      return [...prev, additional];
-    });
+  const handleAdditionalQuantityChange = (additionalId: string, newQuantity: number) => {
+    setSelectedAdditionals(prev => ({
+      ...prev,
+      [additionalId]: Math.max(0, newQuantity)
+    }));
   };
 
   const getTotalPrice = () => {
-    const additionalsPrice = selectedAdditionals.reduce((sum, add) => sum + add.price, 0);
+    const additionalsPrice = Object.entries(selectedAdditionals).reduce((sum, [id, qty]) => {
+      const additional = allAdditionals.find(a => a.id === id);
+      return sum + (additional ? additional.price * qty : 0);
+    }, 0);
     return (item.price + additionalsPrice) * quantity;
   };
 
   const handleAddToCart = () => {
-    addToCart(item, selectedAdditionals, quantity, observations);
-    setSelectedAdditionals([]);
+    const cartAdditionals: CartAdditional[] = Object.entries(selectedAdditionals)
+      .filter(([_, qty]) => qty > 0)
+      .map(([id, qty]) => {
+        const additional = allAdditionals.find(a => a.id === id)!;
+        return {
+          ...additional,
+          quantity: qty
+        };
+      });
+    
+    addToCart(item, cartAdditionals, quantity, observations);
+    setSelectedAdditionals({});
     setQuantity(1);
     setObservations('');
   };
@@ -52,24 +61,36 @@ const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
       
       <CardContent className="space-y-4">
         <div>
-          <h4 className="font-semibold text-primary mb-3">Adicionais:</h4>
-          <div className="grid grid-cols-1 gap-2">
+          <h4 className="font-semibold text-primary mb-3">Adicionais (selecione a quantidade):</h4>
+          <div className="grid grid-cols-1 gap-3">
             {allAdditionals.map((additional) => (
-              <div key={additional.id} className="flex items-center space-x-2 p-2 rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                <Checkbox
-                  id={`${item.id}-${additional.id}`}
-                  checked={selectedAdditionals.some(a => a.id === additional.id)}
-                  onCheckedChange={() => handleAdditionalToggle(additional)}
-                />
-                <label
-                  htmlFor={`${item.id}-${additional.id}`}
-                  className="flex-1 text-sm cursor-pointer"
-                >
-                  {additional.name}
-                </label>
-                <span className="text-sm font-semibold text-burger-orange">
-                  + R$ {additional.price.toFixed(2).replace('.', ',')}
-                </span>
+              <div key={additional.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                <div className="flex-1">
+                  <span className="text-sm font-medium">{additional.name}</span>
+                  <div className="text-sm text-burger-orange font-semibold">
+                    R$ {additional.price.toFixed(2).replace('.', ',')} cada
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdditionalQuantityChange(additional.id, (selectedAdditionals[additional.id] || 0) - 1)}
+                    disabled={!selectedAdditionals[additional.id]}
+                  >
+                    <Minus className="w-3 h-3" />
+                  </Button>
+                  <span className="w-8 text-center font-bold text-lg">
+                    {selectedAdditionals[additional.id] || 0}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdditionalQuantityChange(additional.id, (selectedAdditionals[additional.id] || 0) + 1)}
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

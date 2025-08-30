@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { CartItem, MenuItem, Additional } from '@/types/order';
+import { CartItem, MenuItem, CartAdditional } from '@/types/order';
 import { toast } from '@/hooks/use-toast';
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (menuItem: MenuItem, additionals: Additional[], quantity: number, observations?: string) => void;
+  addToCart: (menuItem: MenuItem, additionals: CartAdditional[], quantity: number, observations?: string) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -29,8 +29,8 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (menuItem: MenuItem, additionals: Additional[], quantity: number, observations?: string) => {
-    const totalPrice = (menuItem.price + additionals.reduce((sum, add) => sum + add.price, 0)) * quantity;
+  const addToCart = (menuItem: MenuItem, additionals: CartAdditional[], quantity: number, observations?: string) => {
+    const totalPrice = (menuItem.price + additionals.reduce((sum, add) => sum + (add.price * add.quantity), 0)) * quantity;
     
     const newItem: CartItem = {
       id: Date.now().toString(),
@@ -64,7 +64,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
     setItems(prev => prev.map(item => {
       if (item.id === id) {
-        const unitPrice = item.menuItem.price + item.additionals.reduce((sum, add) => sum + add.price, 0);
+        const unitPrice = item.menuItem.price + item.additionals.reduce((sum, add) => sum + (add.price * add.quantity), 0);
         return {
           ...item,
           quantity,
