@@ -17,7 +17,10 @@ const Index = () => {
   return (
     <CartProvider>
       <div className="min-h-screen bg-background">
-        <Header onCartClick={() => setCurrentView('cart')} />
+        <Header 
+          onCartClick={() => setCurrentView('cart')} 
+          onLogoClick={() => setCurrentView('menu')}
+        />
         
         {/* Hero Section */}
         {currentView === 'menu' && (

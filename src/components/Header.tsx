@@ -7,9 +7,10 @@ import burgerIcon from '@/assets/burger-icon.png';
 
 interface HeaderProps {
   onCartClick: () => void;
+  onLogoClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
+const Header: React.FC<HeaderProps> = ({ onCartClick, onLogoClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { getTotalItems } = useCart();
 
@@ -27,13 +28,16 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
     <header className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-card/80">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <button 
+          onClick={onLogoClick}
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer"
+        >
           <img src={burgerIcon} alt="Na Brasa" className="w-10 h-10" />
           <div>
             <h1 className="text-xl font-bold text-primary">NA BRASA</h1>
             <p className="text-xs text-burger-orange font-semibold">BURGUER!</p>
           </div>
-        </div>
+        </button>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4">
