@@ -60,6 +60,14 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                     </ul>
                   </div>
                 )}
+                {item.observations && (
+                  <div className="mt-2">
+                    <p className="text-xs font-medium text-burger-orange">Observações:</p>
+                    <p className="text-xs text-muted-foreground italic">
+                      "{item.observations}"
+                    </p>
+                  </div>
+                )}
               </div>
               <Button
                 variant="ghost"

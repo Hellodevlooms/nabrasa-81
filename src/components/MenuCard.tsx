@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import { Plus, Minus } from 'lucide-react';
 import { MenuItem, Additional } from '@/types/order';
 import { useCart } from '@/contexts/CartContext';
@@ -14,6 +15,7 @@ interface MenuCardProps {
 const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
   const [selectedAdditionals, setSelectedAdditionals] = useState<Additional[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [observations, setObservations] = useState('');
   const { addToCart } = useCart();
 
   const handleAdditionalToggle = (additional: Additional) => {
@@ -32,9 +34,10 @@ const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
   };
 
   const handleAddToCart = () => {
-    addToCart(item, selectedAdditionals, quantity);
+    addToCart(item, selectedAdditionals, quantity, observations);
     setSelectedAdditionals([]);
     setQuantity(1);
+    setObservations('');
   };
 
   return (
@@ -70,6 +73,17 @@ const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
               </div>
             ))}
           </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-primary mb-3">Observações:</h4>
+          <Textarea
+            placeholder="Alguma observação especial? (Ex: sem cebola, ponto da carne, etc.)"
+            value={observations}
+            onChange={(e) => setObservations(e.target.value)}
+            className="resize-none"
+            rows={3}
+          />
         </div>
 
         <div className="flex items-center justify-between">

@@ -4,7 +4,7 @@ import { toast } from '@/hooks/use-toast';
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (menuItem: MenuItem, additionals: Additional[], quantity: number) => void;
+  addToCart: (menuItem: MenuItem, additionals: Additional[], quantity: number, observations?: string) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -29,7 +29,7 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (menuItem: MenuItem, additionals: Additional[], quantity: number) => {
+  const addToCart = (menuItem: MenuItem, additionals: Additional[], quantity: number, observations?: string) => {
     const totalPrice = (menuItem.price + additionals.reduce((sum, add) => sum + add.price, 0)) * quantity;
     
     const newItem: CartItem = {
@@ -38,6 +38,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       additionals,
       quantity,
       totalPrice,
+      observations,
     };
 
     setItems(prev => [...prev, newItem]);

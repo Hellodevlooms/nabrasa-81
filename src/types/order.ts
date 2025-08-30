@@ -18,6 +18,7 @@ export interface CartItem {
   additionals: Additional[];
   quantity: number;
   totalPrice: number;
+  observations?: string;
 }
 
 export interface OrderDetails {
