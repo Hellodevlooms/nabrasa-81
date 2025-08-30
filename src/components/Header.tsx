@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ onCartClick }) => {
 
   const handleSocialClick = (platform: 'instagram' | 'whatsapp') => {
     const links = {
-      instagram: 'https://instagram.com',
+      instagram: 'https://www.instagram.com/nabrasabuurguer/',
       whatsapp: 'https://wa.me/5518996277667'
     };
     window.open(links[platform], '_blank');

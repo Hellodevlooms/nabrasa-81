@@ -7,6 +7,7 @@ import CheckoutForm from '@/components/CheckoutForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { menuItems } from '@/data/menu';
 import heroImage from '@/assets/hero-burger.jpg';
+import { Instagram } from 'lucide-react';
 
 type ViewType = 'menu' | 'cart' | 'checkout';
 
@@ -105,27 +106,22 @@ const Index = () => {
           )}
         </main>
 
-        {/* Fixed bottom navigation for mobile */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4">
-          <div className="flex gap-2">
-            {currentView !== 'menu' && (
-              <button
-                onClick={() => setCurrentView('menu')}
-                className="flex-1 bg-muted text-muted-foreground py-3 rounded-lg font-medium"
+        <footer className="py-8 mt-8 border-t border-border/40">
+          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+            <p>
+              Desenvolvido por{" "}
+              <a
+                href="https://www.instagram.com/caiozinsly/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
               >
-                Menu
-              </button>
-            )}
-            {currentView !== 'cart' && (
-              <button
-                onClick={() => setCurrentView('cart')}
-                className="flex-1 bg-burger-orange text-burger-dark py-3 rounded-lg font-medium"
-              >
-                Carrinho
-              </button>
-            )}
+                <Instagram className="h-4 w-4" />
+                Delinx - co.
+              </a>
+            </p>
           </div>
-        </div>
+        </footer>
       </div>
     </CartProvider>
   );
