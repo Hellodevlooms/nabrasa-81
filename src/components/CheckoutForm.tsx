@@ -76,6 +76,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
         });
       }
       
+      if (item.observations) {
+        message += `   📝 Observações: ${item.observations}\n`;
+      }
+      
       message += `   Subtotal: R$ ${item.totalPrice.toFixed(2).replace('.', ',')}\n\n`;
     });
     
