@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
-import { CartProvider } from '@/contexts/CartContext';
+import { CartProvider, useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import MenuCard from '@/components/MenuCard';
 import Cart from '@/components/Cart';
 import CheckoutForm from '@/components/CheckoutForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { menuItems } from '@/data/menu';
 import heroImage from '@/assets/hero-burger-4k.jpg';
-import { Instagram } from 'lucide-react';
+import { Instagram, ShoppingCart } from 'lucide-react';
 
 type ViewType = 'menu' | 'cart' | 'checkout';
+
+const FloatingCartButton = ({ onCartClick }: { onCartClick: () => void }) => {
+  const { getTotalItems } = useCart();
+  const itemCount = getTotalItems();
+
+  if (itemCount === 0) return null;
+
+  return (
+    <Button
+      variant="cart"
+      size="icon"
+      className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-2xl"
+      onClick={onCartClick}
+    >
+      <ShoppingCart className="h-6 w-6" />
+      {itemCount > 0 && (
+        <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+          {itemCount}
+        </span>
+      )}
+    </Button>
+  );
+};
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<ViewType>('menu');
@@ -108,6 +132,11 @@ const Index = () => {
             <CheckoutForm onBack={() => setCurrentView('cart')} />
           )}
         </main>
+
+        {/* Floating Cart Button - Only show on menu view */}
+        {currentView === 'menu' && (
+          <FloatingCartButton onCartClick={() => setCurrentView('cart')} />
+        )}
 
         <footer className="py-8 mt-8 border-t border-border/40">
           <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
