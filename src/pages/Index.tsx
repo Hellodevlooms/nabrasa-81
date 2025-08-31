@@ -6,7 +6,7 @@ import Cart from '@/components/Cart';
 import CheckoutForm from '@/components/CheckoutForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { menuItems } from '@/data/menu';
-import heroImage from '@/assets/hero-burger.jpg';
+import heroImage from '@/assets/hero-burger-4k.jpg';
 import { Instagram } from 'lucide-react';
 
 type ViewType = 'menu' | 'cart' | 'checkout';
@@ -24,7 +24,7 @@ const Index = () => {
         
         {/* Hero Section */}
         {currentView === 'menu' && (
-          <section className="relative h-64 md:h-96 overflow-hidden">
+          <section className="relative h-48 md:h-80 lg:h-96 overflow-hidden">
             <div 
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${heroImage})` }}
@@ -33,21 +33,21 @@ const Index = () => {
             </div>
             <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
               <div className="text-center md:text-left max-w-2xl">
-                <h1 className="text-4xl md:text-6xl font-bold text-burger-light mb-4">
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-burger-light mb-3 md:mb-4">
                   NA BRASA
-                  <span className="block text-primary text-3xl md:text-5xl">BURGUER!</span>
+                  <span className="block text-primary text-2xl md:text-4xl lg:text-5xl">BURGUER!</span>
                 </h1>
-                <p className="text-lg md:text-xl text-burger-light/90 mb-6">
+                <p className="text-base md:text-lg lg:text-xl text-burger-light/90 mb-4 md:mb-6">
                   Os melhores hamburgueres artesanais da cidade
                 </p>
-                <div className="bg-card/90 backdrop-blur-sm rounded-lg p-4 inline-block">
-                  <p className="text-sm text-burger-orange font-semibold">
+                <div className="bg-card/90 backdrop-blur-sm rounded-lg p-3 md:p-4 inline-block">
+                  <p className="text-xs md:text-sm text-burger-orange font-semibold">
                     📍 General Glicério, 1388
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs md:text-sm text-muted-foreground">
                     🕒 Somente aos Sábados - A partir das 19h00
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs md:text-sm text-muted-foreground">
                     📞 (18) 99627-7667
                   </p>
                 </div>
@@ -67,7 +67,7 @@ const Index = () => {
                   </CardHeader>
                 </Card>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   {menuItems.map((item) => (
                     <MenuCard key={item.id} item={item} />
                   ))}

@@ -50,42 +50,44 @@ const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
   };
 
   return (
-    <Card className="hover:shadow-xl transition-all duration-300 hover:scale-105 transform border-2 hover:border-burger-gold">
-      <CardHeader>
-        <CardTitle className="text-primary">{item.name}</CardTitle>
-        <p className="text-muted-foreground text-sm">{item.description}</p>
-        <p className="text-2xl font-bold text-burger-orange">
+    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] transform border hover:border-burger-gold">
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="text-primary text-lg md:text-xl">{item.name}</CardTitle>
+        <p className="text-muted-foreground text-xs md:text-sm line-clamp-2">{item.description}</p>
+        <p className="text-xl md:text-2xl font-bold text-burger-orange">
           R$ {item.price.toFixed(2).replace('.', ',')}
         </p>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4">
         <div>
-          <h4 className="font-semibold text-primary mb-3">Adicionais (selecione a quantidade):</h4>
-          <div className="grid grid-cols-1 gap-3">
+          <h4 className="font-semibold text-primary mb-2 text-sm md:text-base">Adicionais:</h4>
+          <div className="grid grid-cols-1 gap-2">
             {allAdditionals.map((additional) => (
-              <div key={additional.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                <div className="flex-1">
-                  <span className="text-sm font-medium">{additional.name}</span>
-                  <div className="text-sm text-burger-orange font-semibold">
-                    R$ {additional.price.toFixed(2).replace('.', ',')} cada
+              <div key={additional.id} className="flex items-center justify-between p-2 md:p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs md:text-sm font-medium truncate block">{additional.name}</span>
+                  <div className="text-xs md:text-sm text-burger-orange font-semibold">
+                    R$ {additional.price.toFixed(2).replace('.', ',')}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
                   <Button
                     variant="outline"
                     size="sm"
+                    className="h-7 w-7 md:h-8 md:w-8 p-0"
                     onClick={() => handleAdditionalQuantityChange(additional.id, (selectedAdditionals[additional.id] || 0) - 1)}
                     disabled={!selectedAdditionals[additional.id]}
                   >
                     <Minus className="w-3 h-3" />
                   </Button>
-                  <span className="w-8 text-center font-bold text-lg">
+                  <span className="w-6 md:w-8 text-center font-bold text-sm md:text-base">
                     {selectedAdditionals[additional.id] || 0}
                   </span>
                   <Button
                     variant="outline"
                     size="sm"
+                    className="h-7 w-7 md:h-8 md:w-8 p-0"
                     onClick={() => handleAdditionalQuantityChange(additional.id, (selectedAdditionals[additional.id] || 0) + 1)}
                   >
                     <Plus className="w-3 h-3" />
@@ -97,48 +99,50 @@ const MenuCard: React.FC<MenuCardProps> = ({ item }) => {
         </div>
 
         <div>
-          <h4 className="font-semibold text-primary mb-3">Observações:</h4>
+          <h4 className="font-semibold text-primary mb-2 text-sm md:text-base">Observações:</h4>
           <Textarea
-            placeholder="Alguma observação especial? (Ex: sem cebola, ponto da carne, etc.)"
+            placeholder="Observações especiais..."
             value={observations}
             onChange={(e) => setObservations(e.target.value)}
-            className="resize-none"
-            rows={3}
+            className="resize-none text-sm"
+            rows={2}
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="font-semibold">Quantidade:</span>
-          <div className="flex items-center gap-2">
+          <span className="font-semibold text-sm md:text-base">Quantidade:</span>
+          <div className="flex items-center gap-1 md:gap-2">
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
+              className="h-7 w-7 md:h-8 md:w-8 p-0"
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               disabled={quantity <= 1}
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-3 h-3 md:w-4 md:h-4" />
             </Button>
-            <span className="mx-4 font-bold text-lg">{quantity}</span>
+            <span className="mx-2 md:mx-4 font-bold text-sm md:text-lg">{quantity}</span>
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
+              className="h-7 w-7 md:h-8 md:w-8 p-0"
               onClick={() => setQuantity(quantity + 1)}
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3 md:w-4 md:h-4" />
             </Button>
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-3">
+      <CardFooter className="flex flex-col gap-2 md:gap-3 p-4 md:p-6">
         <div className="w-full text-center">
-          <p className="text-lg font-bold text-primary">
+          <p className="text-base md:text-lg font-bold text-primary">
             Total: R$ {getTotalPrice().toFixed(2).replace('.', ',')}
           </p>
         </div>
         <Button 
           variant="burger" 
-          className="w-full"
+          className="w-full text-sm md:text-base"
           onClick={handleAddToCart}
         >
           Adicionar ao Carrinho
