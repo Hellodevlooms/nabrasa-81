@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { menuItems } from '@/data/menu';
 import heroImage from '@/assets/hero-burger-4k.jpg';
-import { Instagram, ShoppingCart } from 'lucide-react';
+import { Instagram, ShoppingCart, BarChart3 } from 'lucide-react';
 
 type ViewType = 'menu' | 'cart' | 'checkout';
 
@@ -76,9 +76,9 @@ const Index = () => {
                     📞 (18) 99627-7667
                   </p>
                   <div className="mt-3">
-                    <Button asChild variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-                      <Link to="/auth">
-                        Acessar Dashboard
+                    <Button asChild size="icon" className="bg-white/10 text-white border-white/20 hover:bg-white/20 h-10 w-10">
+                      <Link to="/auth" title="Acessar Dashboard">
+                        <BarChart3 className="h-5 w-5" />
                       </Link>
                     </Button>
                   </div>
