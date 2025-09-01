@@ -10,6 +10,7 @@ import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { OrderDetails } from '@/types/order';
 import { toast } from '@/hooks/use-toast';
+import { useOrders } from '@/hooks/useOrders';
 
 interface CheckoutFormProps {
   onBack: () => void;
@@ -20,6 +21,7 @@ const DELIVERY_FEE = 3.00;
 
 const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
   const { items, getTotalPrice, clearCart } = useCart();
+  const { saveOrder, loading } = useOrders();
   const [orderDetails, setOrderDetails] = useState<OrderDetails>({
     deliveryType: 'pickup',
     paymentMethod: 'dinheiro',
@@ -40,7 +42,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
 
   const finalTotal = calculateFinalTotal();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!orderDetails.customerName || !orderDetails.customerPhone) {
@@ -61,19 +63,41 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
       return;
     }
 
-    const message = generateWhatsAppMessage();
-    const whatsappUrl = `https://wa.me/5518996277667?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappUrl, '_blank');
-    clearCart();
-    toast({
-      title: "Pedido enviado!",
-      description: "Seu pedido foi enviado pelo WhatsApp. Aguarde o contato!",
-    });
+    try {
+      // Salvar pedido no banco de dados
+      const savedOrder = await saveOrder(items, orderDetails, finalTotal);
+      
+      // Gerar mensagem do WhatsApp com número do pedido
+      const message = generateWhatsAppMessage(savedOrder?.order_number);
+      const whatsappUrl = `https://wa.me/5518996277667?text=${encodeURIComponent(message)}`;
+      
+      window.open(whatsappUrl, '_blank');
+      clearCart();
+      toast({
+        title: "Pedido enviado!",
+        description: `Pedido #${savedOrder?.order_number || 'XXX'} enviado pelo WhatsApp!`,
+      });
+    } catch (error) {
+      // Em caso de erro, permite enviar pelo WhatsApp mesmo assim
+      const message = generateWhatsAppMessage();
+      const whatsappUrl = `https://wa.me/5518996277667?text=${encodeURIComponent(message)}`;
+      
+      window.open(whatsappUrl, '_blank');
+      clearCart();
+      toast({
+        title: "Pedido enviado!",
+        description: "Pedido enviado pelo WhatsApp (erro ao salvar no sistema).",
+      });
+    }
   };
 
-  const generateWhatsAppMessage = () => {
-    let message = "🍔 *NOVO PEDIDO - NA BRASA BURGUER*\n\n";
+  const generateWhatsAppMessage = (orderNumber?: number) => {
+    let message = `🍔 *NOVO PEDIDO - NA BRASA BURGUER*\n`;
+    if (orderNumber) {
+      message += `📋 *Pedido #${orderNumber}*\n\n`;
+    } else {
+      message += "\n";
+    }
     
     message += `👤 *Cliente:* ${orderDetails.customerName}\n`;
     message += `📞 *Telefone:* ${orderDetails.customerPhone}\n\n`;
@@ -257,9 +281,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ onBack }) => {
             </div>
           </div>
 
-          <Button type="submit" variant="burger" className="w-full" size="lg">
+          <Button type="submit" variant="burger" className="w-full" size="lg" disabled={loading}>
             <MessageCircle className="w-4 h-4 mr-2" />
-            Enviar Pedido pelo WhatsApp
+            {loading ? 'Processando...' : 'Enviar Pedido pelo WhatsApp'}
           </Button>
         </form>
       </CardContent>
