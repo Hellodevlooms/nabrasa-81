@@ -14,7 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_item_additionals: {
+        Row: {
+          additional_id: string
+          additional_name: string
+          additional_price: number
+          created_at: string
+          id: string
+          order_item_id: string
+          quantity: number
+        }
+        Insert: {
+          additional_id: string
+          additional_name: string
+          additional_price: number
+          created_at?: string
+          id?: string
+          order_item_id: string
+          quantity: number
+        }
+        Update: {
+          additional_id?: string
+          additional_name?: string
+          additional_price?: number
+          created_at?: string
+          id?: string
+          order_item_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_item_additionals_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          menu_item_id: string
+          menu_item_name: string
+          menu_item_price: number
+          observations: string | null
+          order_id: string
+          quantity: number
+          total_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          menu_item_id: string
+          menu_item_name: string
+          menu_item_price: number
+          observations?: string | null
+          order_id: string
+          quantity: number
+          total_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          menu_item_id?: string
+          menu_item_name?: string
+          menu_item_price?: number
+          observations?: string | null
+          order_id?: string
+          quantity?: number
+          total_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string | null
+          created_at: string
+          customer_name: string
+          customer_phone: string
+          delivery_fee: number
+          delivery_type: string
+          id: string
+          observations: string | null
+          order_number: number
+          payment_method: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          customer_name: string
+          customer_phone: string
+          delivery_fee?: number
+          delivery_type: string
+          id?: string
+          observations?: string | null
+          order_number: number
+          payment_method: string
+          subtotal: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          customer_name?: string
+          customer_phone?: string
+          delivery_fee?: number
+          delivery_type?: string
+          id?: string
+          observations?: string | null
+          order_number?: number
+          payment_method?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

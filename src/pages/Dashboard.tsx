@@ -43,7 +43,27 @@ export default function Dashboard() {
       loadMetrics();
     });
 
-    return () => subscription.unsubscribe();
+    // Set up realtime subscription for orders updates
+    const ordersChannel = supabase
+      .channel('orders-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'orders'
+        },
+        () => {
+          // Reload metrics when new order is created
+          loadMetrics();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+      supabase.removeChannel(ordersChannel);
+    };
   }, [navigate]);
 
   const loadMetrics = async () => {
