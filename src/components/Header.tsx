@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Instagram, MessageCircle, ShoppingCart, BarChart3 } from 'lucide-react';
+import { Menu, Instagram, MessageCircle, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import burgerIcon from '@/assets/burger-icon.png';
 
