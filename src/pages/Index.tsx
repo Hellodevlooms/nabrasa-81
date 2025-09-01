@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CartProvider, useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import MenuCard from '@/components/MenuCard';
 import Cart from '@/components/Cart';
 import CheckoutForm from '@/components/CheckoutForm';
-import Dashboard from '@/pages/Dashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { menuItems } from '@/data/menu';
 import heroImage from '@/assets/hero-burger-4k.jpg';
 import { Instagram, ShoppingCart } from 'lucide-react';
 
-type ViewType = 'menu' | 'cart' | 'checkout' | 'dashboard';
+type ViewType = 'menu' | 'cart' | 'checkout';
 
 const FloatingCartButton = ({ onCartClick }: { onCartClick: () => void }) => {
   const { getTotalItems } = useCart();
@@ -45,7 +45,6 @@ const Index = () => {
         <Header 
           onCartClick={() => setCurrentView('cart')} 
           onLogoClick={() => setCurrentView('menu')}
-          onDashboardClick={() => setCurrentView('dashboard')}
         />
         
         {/* Hero Section */}
@@ -76,6 +75,13 @@ const Index = () => {
                   <p className="text-xs md:text-sm text-muted-foreground">
                     📞 (18) 99627-7667
                   </p>
+                  <div className="mt-3">
+                    <Button asChild variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+                      <Link to="/auth">
+                        Acessar Dashboard
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -132,10 +138,6 @@ const Index = () => {
 
           {currentView === 'checkout' && (
             <CheckoutForm onBack={() => setCurrentView('cart')} />
-          )}
-
-          {currentView === 'dashboard' && (
-            <Dashboard onBack={() => setCurrentView('menu')} />
           )}
         </main>
 

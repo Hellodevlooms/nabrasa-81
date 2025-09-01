@@ -46,21 +46,18 @@ export const useOrders = () => {
 
   const getOrderMetrics = async (): Promise<OrderMetrics> => {
     try {
-      // Dados mockados por enquanto - será implementado quando as tabelas estiverem criadas
+      // Métricas zeradas para iniciar do zero
       return {
-        totalOrders: 25,
-        totalRevenue: 1250.00,
-        topItems: [
-          { name: 'Na Brasa Clássico', quantity: 15, revenue: 375.00 },
-          { name: 'Na Brasa Especial', quantity: 10, revenue: 300.00 }
-        ],
+        totalOrders: 0,
+        totalRevenue: 0.00,
+        topItems: [],
         dailyRevenue: Array.from({ length: 30 }, (_, i) => ({
           date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          revenue: Math.floor(Math.random() * 200) + 50
+          revenue: 0
         })),
         monthlyRevenue: Array.from({ length: 12 }, (_, i) => ({
           month: new Date(new Date().getFullYear(), new Date().getMonth() - (11 - i), 1).toISOString().substring(0, 7),
-          revenue: Math.floor(Math.random() * 5000) + 1000
+          revenue: 0
         }))
       };
     } catch (error) {

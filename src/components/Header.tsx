@@ -8,10 +8,9 @@ import burgerIcon from '@/assets/burger-icon.png';
 interface HeaderProps {
   onCartClick: () => void;
   onLogoClick: () => void;
-  onDashboardClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onCartClick, onLogoClick, onDashboardClick }) => {
+const Header: React.FC<HeaderProps> = ({ onCartClick, onLogoClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { getTotalItems } = useCart();
 
@@ -42,17 +41,6 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onLogoClick, onDashboardCl
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4">
-          {onDashboardClick && (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={onDashboardClick}
-              title="Dashboard de Vendas"
-            >
-              <BarChart3 className="w-4 h-4" />
-              Dashboard
-            </Button>
-          )}
           <Button 
             variant="social" 
             size="sm"
@@ -111,20 +99,6 @@ const Header: React.FC<HeaderProps> = ({ onCartClick, onLogoClick, onDashboardCl
                   </span>
                 )}
               </Button>
-
-              {onDashboardClick && (
-                <Button 
-                  variant="ghost" 
-                  onClick={() => {
-                    onDashboardClick();
-                    setIsOpen(false);
-                  }}
-                  className="w-full"
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  Dashboard
-                </Button>
-              )}
 
               <div className="border-t border-border pt-4 mt-4">
                 <p className="text-sm text-muted-foreground mb-3">Nos siga nas redes sociais:</p>
