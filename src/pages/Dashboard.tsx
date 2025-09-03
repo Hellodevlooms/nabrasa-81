@@ -112,6 +112,9 @@ export default function Dashboard() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Dashboard Na Brasa</h1>
         <div className="flex items-center gap-4">
+          <Button variant="default" onClick={() => navigate('/recent-orders')}>
+            Ver Últimos Pedidos
+          </Button>
           <span className="text-sm text-muted-foreground">
             Logado como: {user.email}
           </span>

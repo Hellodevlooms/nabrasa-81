@@ -231,9 +231,32 @@ export const useOrders = () => {
     }
   };
 
+  const getRecentOrders = async () => {
+    try {
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          order_items (
+            *,
+            order_item_additionals (*)
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(4);
+
+      if (ordersError) throw ordersError;
+      return ordersData || [];
+    } catch (error) {
+      console.error('Erro ao buscar pedidos recentes:', error);
+      throw error;
+    }
+  };
+
   return {
     saveOrder,
     getOrderMetrics,
+    getRecentOrders,
     loading
   };
 };
