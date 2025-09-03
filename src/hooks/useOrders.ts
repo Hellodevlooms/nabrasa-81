@@ -242,6 +242,7 @@ export const useOrders = () => {
             order_item_additionals (*)
           )
         `)
+        .eq('status', 'pending') // Apenas pedidos pendentes
         .order('created_at', { ascending: false })
         .limit(4);
 
@@ -253,10 +254,35 @@ export const useOrders = () => {
     }
   };
 
+  const completeOrder = async (orderId: string) => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'completed' })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Pedido finalizado!",
+        description: "Pedido marcado como concluído pela cozinha.",
+      });
+    } catch (error) {
+      console.error('Erro ao finalizar pedido:', error);
+      toast({
+        title: "Erro ao finalizar",
+        description: "Houve um problema ao finalizar o pedido.",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   return {
     saveOrder,
     getOrderMetrics,
     getRecentOrders,
+    completeOrder,
     loading
   };
 };

@@ -9,7 +9,7 @@ import { User } from '@supabase/supabase-js';
 import { ArrowLeft, Clock, User as UserIcon, Phone, Package, CreditCard } from 'lucide-react';
 
 export default function RecentOrders() {
-  const { getRecentOrders } = useOrders();
+  const { getRecentOrders, completeOrder } = useOrders();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
@@ -38,6 +38,16 @@ export default function RecentOrders() {
       console.error('Erro ao carregar pedidos:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCompleteOrder = async (orderId: string) => {
+    try {
+      await completeOrder(orderId);
+      // Remove o pedido da lista local imediatamente
+      setOrders(orders.filter(order => order.id !== orderId));
+    } catch (error) {
+      console.error('Erro ao finalizar pedido:', error);
     }
   };
 
@@ -132,6 +142,14 @@ export default function RecentOrders() {
                     <div className="text-2xl font-bold text-primary">
                       {formatCurrency(parseFloat(order.total.toString()))}
                     </div>
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="mt-2"
+                      onClick={() => handleCompleteOrder(order.id)}
+                    >
+                      ✅ Finalizado
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
