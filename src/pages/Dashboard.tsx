@@ -45,7 +45,7 @@ export default function Dashboard() {
 
     // Set up realtime subscription for orders updates
     const ordersChannel = supabase
-      .channel('orders-changes')
+      .channel('dashboard-orders-changes')
       .on(
         'postgres_changes',
         {
@@ -54,7 +54,19 @@ export default function Dashboard() {
           table: 'orders'
         },
         () => {
-          // Reload metrics when new order is created
+          console.log('🔄 Nova ordem inserida - atualizando dashboard automaticamente');
+          loadMetrics();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'orders'
+        },
+        () => {
+          console.log('🔄 Ordem atualizada - atualizando dashboard automaticamente');
           loadMetrics();
         }
       )

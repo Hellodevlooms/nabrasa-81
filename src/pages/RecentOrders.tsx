@@ -16,6 +16,8 @@ export default function RecentOrders() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let ordersChannel: any;
+
     // Check authentication
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -25,9 +27,44 @@ export default function RecentOrders() {
       }
       setUser(session.user);
       loadOrders();
+
+      // Set up realtime subscription for orders updates
+      ordersChannel = supabase
+        .channel('recent-orders-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'orders'
+          },
+          () => {
+            console.log('🔄 Nova ordem inserida - atualizando lista de pedidos automaticamente');
+            loadOrders();
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'orders'
+          },
+          () => {
+            console.log('🔄 Ordem atualizada - atualizando lista de pedidos automaticamente');
+            loadOrders();
+          }
+        )
+        .subscribe();
     };
 
     checkAuth();
+
+    return () => {
+      if (ordersChannel) {
+        supabase.removeChannel(ordersChannel);
+      }
+    };
   }, [navigate]);
 
   const loadOrders = async () => {
